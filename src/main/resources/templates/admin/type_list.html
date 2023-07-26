@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>类目列表</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" th:href="@{/admin/css/bootstrap.css}" />
+</head>
+<body>
+	<div class="container">
+
+		<!--导航栏-->
+		<div th:replace="~{admin/header::navbar}">
+
+		</div>
+
+		<div class="text-right">
+			<a class="btn btn-warning" th:href="@{/type/type_add}">添加类目</a>
+		</div>
+
+		<br>
+
+		<table class="table table-bordered table-hover">
+			<tr>
+				<th width="5%">ID</th>
+				<th width="10%">名称</th>
+				<th width="5%">序号</th>
+				<th width="10%">操作</th>
+			</tr>
+			<tr th:each="type:${findType}">
+				<td><p th:text="${type.id}"></p></td>
+				<td><p th:text="${type.name}"></p></td>
+				<td><p th:text="${type.num}"></p></td>
+				<td>
+					<a class="btn btn-primary" th:href="@{/type/typeEdit/}+${type.id}">修改</a>
+					<a class="btn btn-danger" th:href="@{/type/typeDelete/}+${type.id}">删除</a>
+				</td>
+			</tr>
+		</table>
+
+	</div>
+</body>
+</html>

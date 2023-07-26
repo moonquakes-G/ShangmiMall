@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>客户列表</title>
+<meta charset="utf-8"/>
+<link rel="stylesheet" th:href="@{/admin/css/bootstrap.css}"/>
+<script th:src="@{/admin/js/jquery.js}"></script>
+<script>
+	$(function(){
+		//总页数
+		let total = 1;
+		//当前页数
+		let currentPage = Number($('#currentPage').text());
+		//console.log("当前页"+currentPage);
+
+		//每页显示条数  5
+		let strip = 5;
+		//数据总数
+		let Pagecount = $('#PageCount').text();
+		//console.log("数据总数："+Pagecount);
+
+		//根据数据总条数，计算总共页数
+		if(Pagecount % strip == 0){
+			total = Pagecount / strip
+		}else {
+			//JavaScript的Math对象 ceil：向上取整，返回大于或等于 x 的最小整数。
+			total = Math.ceil(Pagecount / strip)
+		}
+
+		//分页按钮的页面渲染
+		$('#count').text('['+Pagecount+']')
+		$('#page').text('['+currentPage+'/'+total+']')
+
+		//上一页按钮禁用
+		if(currentPage  == 1){
+			$('#pre').addClass('disabled');
+		}
+		//下一页按钮禁用
+		if(currentPage  == total){
+			$('#next').addClass('disabled');
+		}
+
+		//上一页
+		$("#pre").click(function () {
+			currentPage -= 1;
+			location.href='/user/toUser_List?currentPage='+currentPage;
+		})
+		//下一页
+		$("#next").click(function(){
+			currentPage += 1;
+			location.href='/user/toUser_List?currentPage='+currentPage;
+		})
+		//首页
+		$('#first_page').click(function() {
+			currentPage = 1;
+			location.href='/user/toUser_List?currentPage='+currentPage;
+		})
+		//尾页
+		$('#last_page').click(function() {
+			currentPage = total;
+			location.href='/user/toUser_List?currentPage='+currentPage;
+		})
+		//前往？页
+		$('#search').click(function (){
+			var inputSearch = $('#input').val();
+			if(inputSearch == '' | inputSearch ==null){
+				alert("请输入值后再GO!")
+			}else {
+				if(0 >= inputSearch | inputSearch>total){
+					alert("输入的值有误！")
+				}else {
+					location.href='/user/toUser_List?currentPage='+inputSearch;
+				}
+			}
+		})
+	})
+</script>
+</head>
+<body>
+<div class="container">
+
+	<!--导航栏-->
+	<div th:replace="~{admin/header::navbar}">
+
+	</div>
+	
+	<div class="text-right"><a class="btn btn-warning" th:href="@{/user/toUser_Add}">添加客户</a></div>
+		
+	<br>
+	
+	<table class="table table-bordered table-hover">
+
+	<tr>
+		<th width="3%">ID</th>
+		<th width="9%">用户</th>
+		<th width="8%">姓名</th>
+		<th width="10%">电话</th>
+		<th width="10%">地址</th>
+		<th width="15%">操作</th>
+	</tr>
+	
+		<tr th:each="user:${findUser}">
+         	<td><p th:text="${user.id}"></p></td>
+         	<td><p th:text="${user.username}"></p></td>
+         	<td><p th:text="${user.name}"></p></td>
+         	<td><p th:text="${user.phone}"></p></td>
+         	<td><p th:text="${user.address}"></p></td>
+			<td>
+				<a class="btn btn-info" th:href="@{/user/toUser_Reset/}+${user.id}">重置密码</a>
+				<a class="btn btn-primary" th:href="@{/user/toUserEdit/}+${user.id}">修改</a>
+				<a class="btn btn-danger" th:href="@{/user/userDelete/}+${user.id}">删除</a>
+			</td>
+       	</tr>
+     	<tr>
+			<td id="PageCount" th:text="${PageCount}" hidden></td>
+			<td id="currentPage" th:text="${currentPage}" hidden></td>
+		</tr>
+     
+	</table>
+
+	<br>
+	<div style='text-align:center;'>
+		<a class='btn btn-info' id='first_page'>首页</a>
+		<a class='btn btn-info' id="pre">上一页</a>
+		<h2 style='display:inline;' id="page">[1/1]</h2>
+		<h2 style='display:inline;' id="count"></h2>
+		<a class='btn btn-info' id="next">下一页</a>
+		<a class='btn btn-info' id="last_page" >尾页</a>
+		<input type='text' class='form-control' id="input" style='display:inline;width:60px;' value=''/>
+		<a class='btn btn-info' id="search">GO</a>
+	</div>
+	<br>
+</div>
+</body>
+</html>
